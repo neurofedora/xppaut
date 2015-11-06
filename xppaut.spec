@@ -13,8 +13,6 @@ XPPAUT is a tool for solving differential equations,
 difference equations, delay equations, functional 
 equations, boundary value problems, and stochastic 
 equations.
-Packaged for local users at PACM and MATH department 
-at Princeton University by Josko Plazonic.
 
 %prep
 %setup -c
