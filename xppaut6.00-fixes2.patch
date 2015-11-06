@@ -1,0 +1,225 @@
+diff -up xppaut-6.00/Makefile.fixes2 xppaut-6.00/Makefile
+--- xppaut-6.00/Makefile.fixes2	2010-12-02 22:06:54.000000000 -0500
++++ xppaut-6.00/Makefile	2010-10-27 14:32:53.000000000 -0400
+@@ -21,8 +21,8 @@ OTHERLIBS= libcvode.a libf2cm.a 
+ # Standard Linux distributions   #
+ ##################################
+ #CFLAGS=   -g -O -DAUTO -DCVODE_YES -DHAVEDLL -DMYSTR=$(VERSION)  -I/usr/X11R6/include
+-CFLAGS=   -g -O -m32 -DNON_UNIX_STDIO -DAUTO -DCVODE_YES  -DHAVEDLL -DMYSTR=$(VERSION)  -I/usr/X11R6/include
+-LDFLAGS=  -m32 -L/usr/X11R6/lib
++CFLAGS=   -g -O -DNON_UNIX_STDIO -DAUTO -DCVODE_YES  -DHAVEDLL -DMYSTR=$(VERSION)
++LDFLAGS=  
+ LIBS= -lX11 -lm -ldl 
+ # NOTE: Recent (RedHat 8) versions of GCC seem to no longer have
+ # the integer errno, so compile with the -DNOERRNO option as well
+diff -up xppaut-6.00/cvodesrc/Makefile.fixes2 xppaut-6.00/cvodesrc/Makefile
+--- xppaut-6.00/cvodesrc/Makefile.fixes2	2009-12-29 10:42:27.000000000 -0500
++++ xppaut-6.00/cvodesrc/Makefile	2010-12-02 22:06:21.000000000 -0500
+@@ -6,7 +6,7 @@
+ # to ranlib from the commands to create lib/libcvode.a.
+ .SUFFIXES: .c .o
+ CC = gcc
+-CFLAGS += -O -m32
++CFLAGS += -O 
+ 
+ SRCS = cvode.c  cvdense.c  dense.c  cvband.c \
+         band.c  cvdiag.c  cvspgmr.c  spgmr.c  \
+diff -up xppaut-6.00/libI77/Makefile.fixes2 xppaut-6.00/libI77/Makefile
+--- xppaut-6.00/libI77/Makefile.fixes2	2009-12-29 10:48:16.000000000 -0500
++++ xppaut-6.00/libI77/Makefile	2010-12-02 22:07:15.000000000 -0500
+@@ -9,7 +9,7 @@ CC = gcc
+ #  wsfe.c:42: structure has no member named `_ptr'
+ #   ...
+ #  Then try the following:
+-CFLAGS += -DSkip_f2c_Undefs -DNON_UNIX_STDIO -O -m32
++CFLAGS += -DSkip_f2c_Undefs -DNON_UNIX_STDIO -O 
+ #
+ # I really don't know what the $!@@**! is going on but it works ...
+ #
+diff -up xppaut-6.00/libI77/fio.h.fixes2 xppaut-6.00/libI77/fio.h
+--- xppaut-6.00/libI77/fio.h.fixes2	2006-06-12 14:42:38.000000000 -0400
++++ xppaut-6.00/libI77/fio.h	2010-12-02 22:05:44.000000000 -0500
+@@ -1,5 +1,6 @@
+ #include <errno.h>
+ #include "stdio.h"
++#include <errno.h>
+ #ifndef NULL
+ /* ANSI C */
+ #include "stddef.h"
+diff -up xppaut-6.00/mkavi/Makefile.fixes2 xppaut-6.00/mkavi/Makefile
+--- xppaut-6.00/mkavi/Makefile.fixes2	2000-08-25 09:18:35.000000000 -0400
++++ xppaut-6.00/mkavi/Makefile	2010-12-02 22:05:44.000000000 -0500
+@@ -1,5 +1,5 @@
+ SRCS = mkavi.cc ppm.cc chunk.cc codec.cc avi.cc
+-CC = gcc
++CC = g++
+ C++FLAGS=  -O2 -Wall
+ OBJS = mkavi.o ppm.o chunk.o codec.o avi.o
+ .cc.o:
+@@ -9,8 +9,8 @@ lib libmkavi.a: $(OBJS)
+ 	        (ar rcv libmkavi.a $(OBJS);cp libmkavi.a ../.  )
+ 
+ avi mkavi: libmkavi.a drive.o
+-	gcc -o mkavi drive.o libmkavi.a -lstdc++
++	g++ -o mkavi drive.o libmkavi.a -lstdc++
+ tarfile:
+ 	tar zcf mkavi.tar.gz $(SRCS) *.h Makefile drive.c
+ clean: 
+-	rm *.o
+\ No newline at end of file
++	rm *.o
+diff -up xppaut-6.00/mkavi/avi.cc.fixes2 xppaut-6.00/mkavi/avi.cc
+--- xppaut-6.00/mkavi/avi.cc.fixes2	2000-08-25 09:10:45.000000000 -0400
++++ xppaut-6.00/mkavi/avi.cc	2010-12-02 22:05:44.000000000 -0500
+@@ -16,12 +16,14 @@
+  */
+ 
+ 
+-#include <iostream.h>
++#include <iostream>
+ #include <strings.h>
+ #include <assert.h>
+ 
+ #include "avi.h"
+ 
++using namespace std;
++
+ avi_header::avi_header(chunkstream *cs, codec *cd, int w, int h, int nframes,
+   int fps)
+   : listchunk(cs, "hdrl list", 0, "hdrl")
+diff -up xppaut-6.00/mkavi/chunk.cc.fixes2 xppaut-6.00/mkavi/chunk.cc
+--- xppaut-6.00/mkavi/chunk.cc.fixes2	2000-08-29 11:47:36.000000000 -0400
++++ xppaut-6.00/mkavi/chunk.cc	2010-12-02 22:05:44.000000000 -0500
+@@ -16,10 +16,12 @@
+  */
+ 
+ 
+-#include <iostream.h>
++#include <iostream>
+ #include <assert.h>
+ #include "chunk.h"
+ 
++using namespace std;
++
+ long stdIO::seek(long off, int whence)
+ {
+   //	assert(whence == SEEK_SET || whence == SEEK_CUR || whence == SEEK_END);
+diff -up xppaut-6.00/mkavi/chunk.h.fixes2 xppaut-6.00/mkavi/chunk.h
+--- xppaut-6.00/mkavi/chunk.h.fixes2	2001-04-12 16:17:56.000000000 -0400
++++ xppaut-6.00/mkavi/chunk.h	2010-12-02 22:05:44.000000000 -0500
+@@ -19,6 +19,9 @@
+ #ifndef CHUNK_INCLUDED
+ #define CHUNK_INCLUDED
+ 
++extern "C" {
++#include <string.h>
++}
+ #define BUFSZ (1024)
+ 
+ // Like strdup, except it uses new
+diff -up xppaut-6.00/mkavi/codec.cc.fixes2 xppaut-6.00/mkavi/codec.cc
+--- xppaut-6.00/mkavi/codec.cc.fixes2	2000-08-29 11:58:01.000000000 -0400
++++ xppaut-6.00/mkavi/codec.cc	2010-12-02 22:05:44.000000000 -0500
+@@ -16,13 +16,15 @@
+  */
+ 
+ 
+-#include <iostream.h>
++#include <iostream>
+ #include <assert.h>
+ #include "codec.h"
+ extern "C" {
+ #include "string.h"
+ }
+ 
++using namespace std;
++
+ codec::codec()
+ {
+ 	this->cs = NULL;
+diff -up xppaut-6.00/mkavi/codec.h.fixes2 xppaut-6.00/mkavi/codec.h
+--- xppaut-6.00/mkavi/codec.h.fixes2	2001-04-12 16:17:56.000000000 -0400
++++ xppaut-6.00/mkavi/codec.h	2010-12-02 22:05:44.000000000 -0500
+@@ -24,7 +24,7 @@
+ 
+ class codec {
+   public:
+-	codec::codec();
++	codec();
+ 	virtual int need_prescan();
+ 	virtual void start(chunkstream *, int w, int h, int nframes);
+ 	virtual void prescan(ppm *, int framenum);
+@@ -80,7 +80,7 @@ class rgb24 : public codec {
+ 
+ class cram16 : public codec {
+   public:
+-	cram16::cram16();
++	cram16();
+ 
+ 	char *type_str() { return "msvc"; }
+ 	chunk *strf() { return new cram16_strf(this->cs, this->w, this->h); }
+diff -up xppaut-6.00/mkavi/drive.c.fixes2 xppaut-6.00/mkavi/drive.c
+--- xppaut-6.00/mkavi/drive.c.fixes2	2001-04-12 16:17:56.000000000 -0400
++++ xppaut-6.00/mkavi/drive.c	2010-12-02 22:05:44.000000000 -0500
+@@ -1,5 +1,6 @@
+ #include <stdio.h>
+-int mkavi__FiiiiiiPUc(int f,int q,int h,int r,int i ,int t, unsigned char *ii);
++#include <stdlib.h>
++int mkavi(int f,int q,int h,int r,int i ,int t, unsigned char *ii);
+ 
+ int main(int argc, char **argv )
+ {
+@@ -23,10 +24,10 @@ int main(int argc, char **argv )
+ 
+ 
+ 
+-    if(mkavi__FiiiiiiPUc(nframes,fps,w,h,0,1,image)==0){
++    if(mkavi(nframes,fps,w,h,0,1,image)==0){
+       printf("sorry - windows must be multiples of 4\n");
+       free(image);
+-      return;
++      return 0;
+     }
+  
+     for(i=0;i<nframes;i++){
+@@ -39,12 +40,13 @@ int main(int argc, char **argv )
+    
+     fclose(fp);
+    
+-    mkavi__FiiiiiiPUc(nframes,fps,w,h,i,2,image);
++    mkavi(nframes,fps,w,h,i,2,image);
+ 
+     }
+-    mkavi__FiiiiiiPUc(nframes,fps,w,h,0,3,image);
++    mkavi(nframes,fps,w,h,0,3,image);
+     free(image);
+-   
++ 
++    return 0;
+ }
+ 
+ 
+diff -up xppaut-6.00/mkavi/ppm.cc.fixes2 xppaut-6.00/mkavi/ppm.cc
+--- xppaut-6.00/mkavi/ppm.cc.fixes2	2000-08-24 21:47:07.000000000 -0400
++++ xppaut-6.00/mkavi/ppm.cc	2010-12-02 22:05:44.000000000 -0500
+@@ -16,7 +16,7 @@
+  */
+ 
+ 
+-#include <iostream.h>
++#include <iostream>
+ #include "ppm.h"
+ 
+ // How many types of IO can we use in one program??
+diff -up xppaut-6.00/mkavi/ppm.h.fixes2 xppaut-6.00/mkavi/ppm.h
+--- xppaut-6.00/mkavi/ppm.h.fixes2	2001-04-12 16:17:56.000000000 -0400
++++ xppaut-6.00/mkavi/ppm.h	2010-12-02 22:05:44.000000000 -0500
+@@ -19,7 +19,7 @@
+ #ifndef PPM_INCLUDED
+ #define PPM_INCLUDED
+ 
+-#include <iostream.h>
++#include <iostream>
+ #include <assert.h>
+ 
+ class ppm {
